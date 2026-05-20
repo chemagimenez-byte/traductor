@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traductor Automático SCORM - MainJobs</title>
+    <!-- JSZip desde CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <style>
+        :root { --primary: #007bff; --bg: #f4f6f9; --text: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 900px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 30px; }
+        
+        .controls { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        select, button { padding: 10px 15px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        button { background: var(--primary); color: white; border: none; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        button.secondary { background: #6c757d; }
+        
+        .dropzone {
+            border: 2px dashed #ccc; border-radius: 8px; padding: 40px; text-align: center;
+            background: #fafafa; transition: all 0.3s; cursor: pointer; margin-bottom: 20px;
+        }
+        .dropzone.dragover { border-color: var(--primary); background: #eef7ff; }
+        .dropzone.disabled { opacity: 0.6; pointer-events: none; }
+        
+        .file-list { max-height: 150px; overflow-y: auto; border: 1px solid #eee; margin-bottom: 20px; }
+        .file-item { padding: 8px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 13px; }
+        
+        .progress-container { margin: 20px 0; background: #eee; height: 10px; border-radius: 5px; overflow: hidden; display: none; }
+        .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+        
+        .log-box { background: #2d2d2d; color: #0f0; padding: 15px; height: 150px; overflow-y: auto; font-family: monospace; font-size: 12px; border-radius: 4px; margin-top: 20px; }
+        
+        .results-area { margin-top: 20px; }
+        .result-item { padding: 15px; border-radius: 4px; margin-bottom: 10px; }
+        .result-item.success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .result-item.error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .download-btn { display: inline-block; margin-top: 5px; padding: 5px 10px; background: #155724; color: white; text-decoration: none; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌍 Traductor Automático SCORM</h1>
+    
+    <div class="controls">
+        <div>
+            <label>Origen:</label>
+            <select id="sourceLang"></select>
+        </div>
+        <div>
+            <label>Destino:</label>
+            <select id="targetLang"></select>
+        </div>
+        <button id="clearBtn" class="secondary">Limpiar</button>
+    </div>
+
+    <div id="dropzone" class="dropzone">
+        <p>Arrastra tus paquetes SCORM (.zip) aquí</p>
+        <p>o</p>
+        <button id="selectBtn">Seleccionar Archivos</button>
+        <input type="file" id="fileInput" multiple accept=".zip" style="display: none;">
+    </div>
+
+    <div id="fileList" class="file-list"></div>
+
+    <button id="startBtn" style="width: 100%; padding: 15px; font-size: 16px;" disabled>Iniciar Traducción</button>
+
+    <div class="progress-container" id="progressContainer" style="display:block;">
+        <div class="progress-bar" id="progressBar"></div>
+        <div id="progressText" style="text-align: center; font-size: 12px; margin-top: 5px; color: #666;">Esperando archivos...</div>
+    </div>
+
+    <div id="resultsArea" class="results-area"></div>
+
+    <div class="log-box" id="logContainer"></div>
+</div>
+
+<!-- Carga de Módulos en Orden Estricto -->
+<script src="translation-service.js"></script>
+<script src="translator-patch.js"></script>
+<script src="translator-core.js"></script>
+<script src="translator-app.js"></script>
+
+</body>
+</html>
